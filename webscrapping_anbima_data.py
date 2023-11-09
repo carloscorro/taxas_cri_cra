@@ -5,4 +5,8 @@ from bs4 import BeautifulSoup
 url = "https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/taxas-de-cri-e-cra/taxas-de-cri-e-cra.htm"
 r = requests.get(url)
 
-print(r)
+soup = BeautifulSoup(r.text, "lxml")
+
+table = soup.find("table", class_ = "custom-anbi-ui-table")
+
+print(table)
