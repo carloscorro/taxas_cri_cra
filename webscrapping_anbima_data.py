@@ -51,4 +51,20 @@ def checar_benchmark(Benchmark):
     
 df['Benchmark'] = df["Índice / Correção"].apply(checar_benchmark)
 
+# Iremos filtrar o desvio padrão criando uma função
+
+df["Desvio Padrão"] = df["Desvio Padrão"].str.replace(',','.')
+
+def converter_float(dp):
+    if dp != "":
+        return float(dp)
+    else:
+        return ""
+        
+df['Desvio Padrão - Status'] = df["Desvio Padrão"].apply(converter_float)
+
+# FILTRANDO COLUNA POR CONDIÇÃO
+# busca = ['']
+# df = df[df['Desvio Padrão'].isin(busca)]
+
 print(df)
