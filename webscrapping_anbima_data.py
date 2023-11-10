@@ -30,19 +30,25 @@ for i in rows[1:]:
     l = len(df)
     df.loc[l] = row
 
-# Iremos filtrar os benchmarks 
+# Iremos filtrar os benchmarks criando uma função
+
 pos_ipca ="IPCA"
 pos_cdi = "DI"
 hibrido_ipca = "IPCA"
 hibrido_cdi = "DI"
-  
-# boolean series retornan com Falso no lugar de NaN 
-bool_series_pos_ipca = df["Índice / Correção"].str.endswith(pos_ipca, na = False)
-bool_series_pos_cdi = df["Índice / Correção"].str.endswith(pos_cdi, na = False)
-bool_series_hibrido_ipca = df["Índice / Correção"].str.endswith(hibrido_ipca, na = False)
-bool_series_hibrido_cdi = df["Índice / Correção"].str.endswith(hibrido_cdi, na = False)
 
-df_pos_fixado = df[bool_series_pos_ipca]
+def checar_benchmark(Benchmark):
+    if Benchmark.endswith(pos_ipca) == True:
+        return "Pós - IPCA"
+    elif Benchmark.endswith(pos_cdi) == True:
+        return "Pós - DI"
+    elif Benchmark.startswith(hibrido_ipca) == True:
+        return "Pré - IPCA"
+    elif Benchmark.startswith(hibrido_cdi) == True:
+        return "Pré - CDI"
+    else:
+        return ""
+    
+df['Benchmark'] = df["Índice / Correção"].apply(checar_benchmark)
 
-print(df_pos_fixado["Índice / Correção"])
-print(len(df_pos_fixado))
+print(df)
