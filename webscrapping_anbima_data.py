@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
 
 #Aqui fazemos o request do link
 url = "https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/taxas-de-cri-e-cra/taxas-de-cri-e-cra.htm"
@@ -31,7 +32,6 @@ for i in rows[1:]:
     df.loc[l] = row
 
 # Iremos filtrar os benchmarks criando uma função
-
 pos_ipca ="IPCA"
 pos_cdi = "DI"
 hibrido_ipca = "IPCA"
@@ -61,10 +61,40 @@ def converter_float(dp):
     else:
         return ""
         
-df['Desvio Padrão - Status'] = df["Desvio Padrão"].apply(converter_float)
+df['DP'] = df["Desvio Padrão"].apply(converter_float)
+df = df.rename(columns={'Data de Referência' : 'Data'})
+
+df['PU'] = df['PU'].str.replace(',','.')
+df['PU'] = df["PU"].apply(converter_float)
+df = df[::-1]
 
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
 # df = df[df['Desvio Padrão'].isin(busca)]
 
-print(df)
+#Filtrar dados a partir do código do ativo
+filtro_cra = 'CRA021004NV'
+
+df_graph = df.loc[df['Código'] == filtro_cra]
+df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
+bid = df_bid_ask['Taxa Compra']
+ask = df_bid_ask['Taxa Venda']
+data = df_bid_ask['Data']
+pu = df_graph['PU']
+desvio = df_graph['DP']
+
+plt.plot(data, desvio, label = "Desvio Padrão") 
+plt.legend() 
+plt.show()
+
+plt.plot(data, pu, label = "PU") 
+plt.legend() 
+plt.show()
+
+plt.plot(data, bid, label = "bid") 
+plt.plot(data, ask, label = "ask") 
+plt.legend() 
+plt.show()
+
+# print(df_graph.columns)
+# print(df_graph[['Data', 'PU']])
