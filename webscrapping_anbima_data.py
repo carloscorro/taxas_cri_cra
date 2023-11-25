@@ -2,6 +2,8 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
+import pylab as pl
+from datetime import datetime
 
 #Aqui fazemos o request do link
 url = "https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/taxas-de-cri-e-cra/taxas-de-cri-e-cra.htm"
@@ -52,7 +54,6 @@ def checar_benchmark(Benchmark):
 df['Benchmark'] = df["Índice / Correção"].apply(checar_benchmark)
 
 # Iremos filtrar o desvio padrão criando uma função
-
 df["Desvio Padrão"] = df["Desvio Padrão"].str.replace(',','.')
 
 def converter_float(dp):
@@ -66,35 +67,61 @@ df = df.rename(columns={'Data de Referência' : 'Data'})
 
 df['PU'] = df['PU'].str.replace(',','.')
 df['PU'] = df["PU"].apply(converter_float)
+
+#Investendo os dados pela data
 df = df[::-1]
+
+
+#Converter colunas de datas que estão em STR para Datas
+formato = "%d/%M/%Y"
+df_hoje = df.Data.apply(lambda linha: datetime.strptime(linha, formato).date())
+df['Data'] = df_hoje
+df
+
+datas = df.Data.unique()
+data_hoje = datas[0]
+data_hoje
+type(data_hoje)
+
+df_hoje = df[df['Data'].isin([data_hoje])]
+df_hoje
+
+df[(df['Duration']=='')].count()
+df[(df['DP']=='')].count()
+
+
+plt.scatter(df['Duration'], df['DP'], color='blue')
+plt.xlabel('Duration')
+plt.ylabel('DP')
+plt.show()
 
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
 # df = df[df['Desvio Padrão'].isin(busca)]
 
 #Filtrar dados a partir do código do ativo
-filtro_cra = 'CRA021004NV'
+# filtro_cra = 'CRA021004NV'
 
-df_graph = df.loc[df['Código'] == filtro_cra]
-df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
-bid = df_bid_ask['Taxa Compra']
-ask = df_bid_ask['Taxa Venda']
-data = df_bid_ask['Data']
-pu = df_graph['PU']
-desvio = df_graph['DP']
+# df_graph = df.loc[df['Código'] == filtro_cra]
+# df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
+# bid = df_bid_ask['Taxa Compra']
+# ask = df_bid_ask['Taxa Venda']
+# data = df_bid_ask['Data']
+# pu = df_graph['PU']
+# desvio = df_graph['DP']
 
-plt.plot(data, desvio, label = "Desvio Padrão") 
-plt.legend() 
-plt.show()
+# plt.plot(data, desvio, label = "Desvio Padrão") 
+# plt.legend() 
+# plt.show()
 
-plt.plot(data, pu, label = "PU") 
-plt.legend() 
-plt.show()
+# plt.plot(data, pu, label = "PU") 
+# plt.legend() 
+# plt.show()
 
-plt.plot(data, bid, label = "bid") 
-plt.plot(data, ask, label = "ask") 
-plt.legend() 
-plt.show()
+# plt.plot(data, bid, label = "bid") 
+# plt.plot(data, ask, label = "ask") 
+# plt.legend() 
+# plt.show()
 
 # print(df_graph.columns)
 # print(df_graph[['Data', 'PU']])
