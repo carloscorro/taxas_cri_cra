@@ -47,9 +47,10 @@ df = df[::-1]
 
 #Converter colunas de datas que estão em STR para DateTime
 formato = "%d/%M/%Y"
-df_hoje = df.Data.apply(lambda linha: datetime.strptime(linha, formato).date())
-df['Data'] = df_hoje
-
+df_data = df.Data.apply(lambda linha: datetime.strptime(linha, formato).date())
+df['Data'] = df_data
+df_vencimento = df.Vencimento.apply(lambda linha: datetime.strptime(linha, formato).date())
+df['Vencimento'] = df_vencimento
 
 def checar_benchmark(Benchmark):
     if Benchmark.endswith(pos_ipca) == True:
@@ -72,8 +73,13 @@ def converter_float(dp):
 lista_colunas = ['Taxa Compra', 'Taxa Venda', 'Taxa Indicativa', 'Desvio Padrão', 'PU', '% PU Par', 'Duration']
 
 for coluna in lista_colunas:
+    #Convertendo os valores da coluna de Str para Float
     df[coluna] = df[coluna].str.replace(',','.')
     df[coluna] = df[coluna].apply(converter_float)
+    #Eliminando valores vazios do dataframe
+    filtro = df[coluna] != ''
+    df = df[filtro]
+
 
 #Pegando a data atual dos dados 
 datas = df.Data.unique()
@@ -81,18 +87,23 @@ data_hoje = datas[-1]
 
 #Filtrando pela dados pela data atual
 df_hoje = df[df['Data'].isin([data_hoje])]
-filtro = df_hoje['DP'] != ''
-df_hoje = df_hoje[filtro]
 
-#Eliminando valores vazios do dataframe
+#Conferindo se há valores vazios nas colunas
 df_hoje[(df_hoje['Duration']=='')].count()
-df_hoje[(df_hoje['DP']=='')].count()
+df_hoje[(df_hoje['Desvio Padrão']=='')].count()
+df_hoje[(df_hoje['Taxa Compra']=='')].count()
+
+#Definindo as colunas para o gráfico
+coluna_a = 'Vencimento'
+coluna_b = 'Taxa Compra'
 
 #Plotar gráfico de dispersão
-plt.scatter(df_hoje['Duration'], df_hoje['DP'], color='blue')
-plt.xlabel('Duration')
-plt.ylabel('DP')
+plt.scatter(df_hoje[coluna_a], df_hoje[coluna_b], color='blue')
+plt.xlabel(coluna_a)
+plt.ylabel(coluna_b)
 plt.show()
+
+df_hoje.columns
 
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
