@@ -39,6 +39,18 @@ pos_cdi = "DI"
 hibrido_ipca = "IPCA"
 hibrido_cdi = "DI"
 
+#Renomeando coluna da Data
+df = df.rename(columns={'Data de Referência' : 'Data'})
+
+#Investendo os dados pela data
+df = df[::-1]
+
+#Converter colunas de datas que estão em STR para DateTime
+formato = "%d/%M/%Y"
+df_hoje = df.Data.apply(lambda linha: datetime.strptime(linha, formato).date())
+df['Data'] = df_hoje
+
+
 def checar_benchmark(Benchmark):
     if Benchmark.endswith(pos_ipca) == True:
         return "Pós - IPCA"
@@ -50,61 +62,33 @@ def checar_benchmark(Benchmark):
         return "Pré - CDI"
     else:
         return ""
-    
-df['Benchmark'] = df["Índice / Correção"].apply(checar_benchmark)
-
-# Iremos filtrar o desvio padrão criando uma função
-df["Desvio Padrão"] = df["Desvio Padrão"].str.replace(',','.')
 
 def converter_float(dp):
     if dp != "":
         return float(dp)
     else:
         return ""
-        
-df['DP'] = df["Desvio Padrão"].apply(converter_float)
-df = df.rename(columns={'Data de Referência' : 'Data'})
 
-df['PU'] = df['PU'].str.replace(',','.')
-df['PU'] = df["PU"].apply(converter_float)
+lista_colunas = ['Taxa Compra', 'Taxa Venda', 'Taxa Indicativa', 'Desvio Padrão', 'PU', '% PU Par', 'Duration']
 
-#Investendo os dados pela data
-df = df[::-1]
-df
-
-#Converter colunas de datas que estão em STR para Datas
-formato = "%d/%M/%Y"
-df_hoje = df.Data.apply(lambda linha: datetime.strptime(linha, formato).date())
-df['Data'] = df_hoje
-df
+for coluna in lista_colunas:
+    df[coluna] = df[coluna].str.replace(',','.')
+    df[coluna] = df[coluna].apply(converter_float)
 
 #Pegando a data atual dos dados 
 datas = df.Data.unique()
 data_hoje = datas[-1]
-data_hoje
-type(data_hoje)
 
+#Filtrando pela dados pela data atual
 df_hoje = df[df['Data'].isin([data_hoje])]
 filtro = df_hoje['DP'] != ''
 df_hoje = df_hoje[filtro]
-df_hoje
 
 #Eliminando valores vazios do dataframe
 df_hoje[(df_hoje['Duration']=='')].count()
 df_hoje[(df_hoje['DP']=='')].count()
 
-df_hoje["Duration"] = df["Duration"].str.replace(',','.')
-
-def converter_float(dp):
-    if dp != "":
-        return float(dp)
-    else:
-        return ""
-        
-df_hoje['Duration'] = df_hoje["Duration"].apply(converter_float)
-
-df_hoje
-
+#Plotar gráfico de dispersão
 plt.scatter(df_hoje['Duration'], df_hoje['DP'], color='blue')
 plt.xlabel('Duration')
 plt.ylabel('DP')
