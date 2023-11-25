@@ -70,7 +70,7 @@ df['PU'] = df["PU"].apply(converter_float)
 
 #Investendo os dados pela data
 df = df[::-1]
-
+df
 
 #Converter colunas de datas que estão em STR para Datas
 formato = "%d/%M/%Y"
@@ -78,19 +78,34 @@ df_hoje = df.Data.apply(lambda linha: datetime.strptime(linha, formato).date())
 df['Data'] = df_hoje
 df
 
+#Pegando a data atual dos dados 
 datas = df.Data.unique()
-data_hoje = datas[0]
+data_hoje = datas[-1]
 data_hoje
 type(data_hoje)
 
 df_hoje = df[df['Data'].isin([data_hoje])]
+filtro = df_hoje['DP'] != ''
+df_hoje = df_hoje[filtro]
 df_hoje
 
-df[(df['Duration']=='')].count()
-df[(df['DP']=='')].count()
+#Eliminando valores vazios do dataframe
+df_hoje[(df_hoje['Duration']=='')].count()
+df_hoje[(df_hoje['DP']=='')].count()
 
+df_hoje["Duration"] = df["Duration"].str.replace(',','.')
 
-plt.scatter(df['Duration'], df['DP'], color='blue')
+def converter_float(dp):
+    if dp != "":
+        return float(dp)
+    else:
+        return ""
+        
+df_hoje['Duration'] = df_hoje["Duration"].apply(converter_float)
+
+df_hoje
+
+plt.scatter(df_hoje['Duration'], df_hoje['DP'], color='blue')
 plt.xlabel('Duration')
 plt.ylabel('DP')
 plt.show()
