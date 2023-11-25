@@ -33,12 +33,6 @@ for i in rows[1:]:
     l = len(df)
     df.loc[l] = row
 
-# Iremos filtrar os benchmarks criando uma função
-pos_ipca ="IPCA"
-pos_cdi = "DI"
-hibrido_ipca = "IPCA"
-hibrido_cdi = "DI"
-
 #Renomeando coluna da Data
 df = df.rename(columns={'Data de Referência' : 'Data'})
 
@@ -52,17 +46,45 @@ df['Data'] = df_data
 df_vencimento = df.Vencimento.apply(lambda linha: datetime.strptime(linha, formato).date())
 df['Vencimento'] = df_vencimento
 
-def checar_benchmark(Benchmark):
+# Iremos filtrar os benchmarks criando uma função
+pos_ipca ="IPCA"
+pos_cdi = "DI"
+hibrido_ipca = "IPCA"
+hibrido_cdi = "DI"
+
+def extrair_benchmark(Benchmark):
     if Benchmark.endswith(pos_ipca) == True:
         return "Pós - IPCA"
     elif Benchmark.endswith(pos_cdi) == True:
         return "Pós - DI"
     elif Benchmark.startswith(hibrido_ipca) == True:
-        return "Pré - IPCA"
+        return "IPCA +"
     elif Benchmark.startswith(hibrido_cdi) == True:
-        return "Pré - CDI"
+        return "CDI +"
     else:
         return ""
+    
+def extrair_taxas(Benchmark):
+    if Benchmark.endswith(pos_ipca) == True:
+        return "Pós - IPCA"
+    elif Benchmark.endswith(pos_cdi) == True:
+        taxa = Benchmark[0:-7]
+        return taxa
+    elif Benchmark.startswith(hibrido_ipca) == True:
+        taxa = Benchmark[6:-1]
+        return taxa
+    elif Benchmark.startswith(hibrido_cdi) == True:
+        taxa = Benchmark[5:-1]
+        return taxa
+    else:
+        return ""
+
+df['Benchmark'] = df["Índice / Correção"].apply(extrair_benchmark)
+df['taxa'] = df["Índice / Correção"].apply(extrair_taxas)
+
+filtro = df['Benchmark'] == "Pós - DI"
+df_filtro = df[filtro]
+df_filtro
 
 def converter_float(dp):
     if dp != "":
@@ -80,7 +102,6 @@ for coluna in lista_colunas:
     filtro = df[coluna] != ''
     df = df[filtro]
 
-
 #Pegando a data atual dos dados 
 datas = df.Data.unique()
 data_hoje = datas[-1]
@@ -89,13 +110,13 @@ data_hoje = datas[-1]
 df_hoje = df[df['Data'].isin([data_hoje])]
 
 #Conferindo se há valores vazios nas colunas
-df_hoje[(df_hoje['Duration']=='')].count()
-df_hoje[(df_hoje['Desvio Padrão']=='')].count()
-df_hoje[(df_hoje['Taxa Compra']=='')].count()
+# df_hoje[(df_hoje['Duration']=='')].count()
+# df_hoje[(df_hoje['Desvio Padrão']=='')].count()
+# df_hoje[(df_hoje['Taxa Compra']=='')].count()
 
 #Definindo as colunas para o gráfico
 coluna_a = 'Vencimento'
-coluna_b = 'Taxa Compra'
+coluna_b = 'Desvio Padrão'
 
 #Plotar gráfico de dispersão
 plt.scatter(df_hoje[coluna_a], df_hoje[coluna_b], color='blue')
@@ -104,6 +125,8 @@ plt.ylabel(coluna_b)
 plt.show()
 
 df_hoje.columns
+
+df
 
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
