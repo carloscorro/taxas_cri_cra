@@ -46,6 +46,23 @@ df['Data'] = df_data
 df_vencimento = df.Vencimento.apply(lambda linha: datetime.strptime(linha, formato).date())
 df['Vencimento'] = df_vencimento
 
+#Convertendo as colunas de Str para Float
+def converter_float(dp):
+    if dp != "":
+        return float(dp)
+    else:
+        return ""
+
+lista_colunas = ['Taxa Compra', 'Taxa Venda', 'Taxa Indicativa', 'Desvio Padrão', 'PU', '% PU Par', 'Duration']
+
+for coluna in lista_colunas:
+    #Convertendo os valores da coluna de Str para Float
+    df[coluna] = df[coluna].str.replace(',','.')
+    df[coluna] = df[coluna].apply(converter_float)
+    #Eliminando valores vazios do dataframe
+    filtro = df[coluna] != ''
+    df = df[filtro]
+
 #Fltrar os benchmarks atráves de uma função
 pos_ipca ="IPCA"
 pos_cdi = "DI"
@@ -80,35 +97,48 @@ def extrair_taxas(Benchmark):
         return taxa
     else:
         return ""
+    
+#Sumarizar duration em anos
 
+def duration_em_anos(duration):
+    if duration < 252:
+        return 1
+    elif duration > 252 and duration <= 504:
+        return 2
+    elif duration > 504 and duration <= 756:
+        return 3
+    elif duration > 756 and duration <= 1008:
+        return 4
+    elif duration > 1008 and duration <= 1260:
+        return 5
+    elif duration > 1260 and duration <= 1512:
+        return 6
+    elif duration > 1512 and duration <= 1764:
+        return 7
+    elif duration > 1764 and duration <= 2016:
+        return 8
+    elif duration > 2016 and duration <= 2268:
+        return 9
+    elif duration > 2268 and duration <= 2520:
+        return 10
+    elif duration > 2520 and duration <= 2772:
+        return 11
+    else:
+        return 12
+    
 df['Benchmark'] = df["Índice / Correção"].apply(extrair_benchmark)
 df['taxa'] = df["Índice / Correção"].apply(extrair_taxas)
+df['duration_anos'] = df["Duration"].apply(duration_em_anos)
 
 #Pegando a data atual dos dados 
 datas = df.Data.unique()
 data_hoje = datas[-1]
 
-#Filtrando pela dados pela data atual
+#Filtrando os dados pela data atual
 df_hoje = df[df['Data'].isin([data_hoje])]
 
-#Convertendo as colunas de Str para Float
-def converter_float(dp):
-    if dp != "":
-        return float(dp)
-    else:
-        return ""
-
-lista_colunas = ['Taxa Compra', 'Taxa Venda', 'Taxa Indicativa', 'Desvio Padrão', 'PU', '% PU Par', 'Duration']
-
-for coluna in lista_colunas:
-    #Convertendo os valores da coluna de Str para Float
-    df[coluna] = df[coluna].str.replace(',','.')
-    df[coluna] = df[coluna].apply(converter_float)
-    #Eliminando valores vazios do dataframe
-    filtro = df[coluna] != ''
-    df = df[filtro]
-
-###########################==========#########################
+#Criando CSV do DataFrame tratado
+df_hoje.to_csv("df.csv")
 
 #Filtrando pelo Benchmark
 filtro = df['Benchmark'] == "Pós - DI"
@@ -121,20 +151,17 @@ df_filtro
 # df_hoje[(df_hoje['Taxa Compra']=='')].count()
 
 #Definindo as colunas para o gráfico
-coluna_a = 'Vencimento'
-coluna_b = 'Desvio Padrão'
+dados_x = 'duration_anos'
+dados_y = df['duration_anos'].value_counts()
 
 #Plotar gráfico de dispersão
-plt.scatter(df_hoje[coluna_a], df_hoje[coluna_b], color='blue')
-plt.xlabel(coluna_a)
-plt.ylabel(coluna_b)
+plt.scatter(df_hoje[dados_x], df_hoje[dados_y], color='blue')
+plt.xlabel(dados_x)
+plt.ylabel(dados_y)
 plt.show()
 
 df_hoje.columns
 
-df
-
-data_hoje
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
 # df = df[df['Desvio Padrão'].isin(busca)]
