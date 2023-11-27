@@ -160,7 +160,7 @@ plt.xlabel(dados_x)
 plt.ylabel(dados_y)
 plt.show()
 
-df_hoje.columns
+# df_hoje.columns
 
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
