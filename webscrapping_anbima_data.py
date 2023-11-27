@@ -46,7 +46,7 @@ df['Data'] = df_data
 df_vencimento = df.Vencimento.apply(lambda linha: datetime.strptime(linha, formato).date())
 df['Vencimento'] = df_vencimento
 
-# Iremos filtrar os benchmarks criando uma função
+#Fltrar os benchmarks atráves de uma função
 pos_ipca ="IPCA"
 pos_cdi = "DI"
 hibrido_ipca = "IPCA"
@@ -63,7 +63,9 @@ def extrair_benchmark(Benchmark):
         return "CDI +"
     else:
         return ""
-    
+
+#Extrair as taxas atráves de uma função
+
 def extrair_taxas(Benchmark):
     if Benchmark.endswith(pos_ipca) == True:
         return "Pós - IPCA"
@@ -82,10 +84,14 @@ def extrair_taxas(Benchmark):
 df['Benchmark'] = df["Índice / Correção"].apply(extrair_benchmark)
 df['taxa'] = df["Índice / Correção"].apply(extrair_taxas)
 
-filtro = df['Benchmark'] == "Pós - DI"
-df_filtro = df[filtro]
-df_filtro
+#Pegando a data atual dos dados 
+datas = df.Data.unique()
+data_hoje = datas[-1]
 
+#Filtrando pela dados pela data atual
+df_hoje = df[df['Data'].isin([data_hoje])]
+
+#Convertendo as colunas de Str para Float
 def converter_float(dp):
     if dp != "":
         return float(dp)
@@ -102,12 +108,12 @@ for coluna in lista_colunas:
     filtro = df[coluna] != ''
     df = df[filtro]
 
-#Pegando a data atual dos dados 
-datas = df.Data.unique()
-data_hoje = datas[-1]
+###########################==========#########################
 
-#Filtrando pela dados pela data atual
-df_hoje = df[df['Data'].isin([data_hoje])]
+#Filtrando pelo Benchmark
+filtro = df['Benchmark'] == "Pós - DI"
+df_filtro = df[filtro]
+df_filtro
 
 #Conferindo se há valores vazios nas colunas
 # df_hoje[(df_hoje['Duration']=='')].count()
@@ -128,6 +134,7 @@ df_hoje.columns
 
 df
 
+data_hoje
 # FILTRANDO COLUNA POR CONDIÇÃO
 # busca = ['']
 # df = df[df['Desvio Padrão'].isin(busca)]
