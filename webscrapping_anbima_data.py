@@ -82,7 +82,6 @@ def extrair_benchmark(Benchmark):
         return ""
 
 #Extrair as taxas atráves de uma função
-
 def extrair_taxas(Benchmark):
     if Benchmark.endswith(pos_ipca) == True:
         return "Pós - IPCA"
@@ -130,6 +129,14 @@ df['Benchmark'] = df["Índice / Correção"].apply(extrair_benchmark)
 df['taxa'] = df["Índice / Correção"].apply(extrair_taxas)
 df['duration_anos'] = df["Duration"].apply(duration_em_anos)
 
+coluna = 'taxa'
+#Convertendo os valores da coluna de Str para Float
+df[coluna] = df[coluna].str.replace(',','.')
+df[coluna] = df[coluna].apply(converter_float)
+#Eliminando valores vazios do dataframe
+filtro = df[coluna] != ''
+df = df[filtro]
+
 #Pegando a data atual dos dados 
 datas = df.Data.unique()
 data_hoje = datas[-1]
@@ -140,10 +147,12 @@ df_hoje = df[df['Data'].isin([data_hoje])]
 #Criando CSV do DataFrame tratado
 df_hoje.to_csv("df.csv")
 
-#Filtrando pelo Benchmark
-filtro = df['Benchmark'] == "Pós - DI"
-df_filtro = df[filtro]
-df_filtro
+######################=================#####################
+
+# #Filtrando pelo Benchmark
+# filtro = df['Benchmark'] == "Pós - DI"
+# df_filtro = df[filtro]
+# df_filtro
 
 #Conferindo se há valores vazios nas colunas
 # df_hoje[(df_hoje['Duration']=='')].count()
