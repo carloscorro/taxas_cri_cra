@@ -111,7 +111,13 @@ def Home(ativo):
             alt.X('Taxa Compra:Q', bin=alt.Bin(maxbins=100)),
             alt.Y('count()', stack=None),
             alt.Color('Experiment:N')
+                ).properties(
+                title='Taxa Compra - Histograma'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
                 )
+
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
         with tab3:
@@ -125,7 +131,13 @@ def Home(ativo):
             alt.X('Taxa Compra:Q', bin=alt.Bin(maxbins=100)),
             alt.Y('count()', stack=None),
             alt.Color('Experiment:N')
+                ).properties(
+                title='Taxa Compra - Histograma'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
                 )
+            
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
         with tab4:
@@ -139,7 +151,13 @@ def Home(ativo):
             alt.X('Taxa Compra:Q', bin=alt.Bin(maxbins=100)),
             alt.Y('count()', stack=None),
             alt.Color('Experiment:N')
+                ).properties(
+                title='Taxa Compra - Histograma'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
                 )
+            
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
     col3, col4 = st.columns(2)
@@ -147,13 +165,30 @@ def Home(ativo):
     with col3:
         chart_ipca = alt.Chart(df_cra_ipca).mark_boxplot(size=40).encode(
         x='duration_anos',
-        y='taxa')
+        y='taxa').properties(
+                title='Taxa por Duration em anos'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
+        
         chart_cdi = alt.Chart(df_cra_cdi).mark_boxplot(extent='min-max').encode(
         x='duration_anos',
-        y='taxa')
+        y='taxa').properties(
+                title='Taxa por Duration em anos'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
+        
         chart_pos_di = alt.Chart(df_cra_pos_di).mark_boxplot(extent='min-max').encode(
         x='duration_anos',
-        y='taxa')
+        y='taxa').properties(
+                title='Taxa por Duration em anos'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
 
         tab3, tab4, tab5 = st.tabs(['Taxa - IPCA +', 'Taxa - CDI +', 'Taxa - Pós DI'])
 
@@ -171,21 +206,36 @@ def Home(ativo):
             chart = alt.Chart(df_cra_ipca).mark_circle(size=60).encode(
             x='Duration',
             y='taxa',
-            ).interactive()
+            ).interactive().properties(
+                title='Taxa por Duration em dias'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
 
             st.altair_chart(chart, theme='streamlit', use_container_width=True)
         with tab2:
             chart = alt.Chart(df_cra_cdi).mark_circle(size=60).encode(
             x='Duration',
             y='taxa',
-            ).interactive()
+            ).interactive().properties(
+                title='Taxa por Duration em dias'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
 
             st.altair_chart(chart, theme='streamlit', use_container_width=True)
         with tab3:
             chart = alt.Chart(df_cra_pos_di).mark_circle(size=60).encode(
             x='Duration',
             y='taxa',
-            ).interactive()
+            ).interactive().properties(
+                title='Taxa por Duration em dias'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
 
             st.altair_chart(chart, theme='streamlit', use_container_width=True)
 
