@@ -9,11 +9,6 @@ import plotly.express as px
 import altair as alt
 import numpy as np
 import time
-# from numerize.numerize import numerize
-# import time
-# from streamlit_extras.metric_cards import style_metric_cards
-# st.set_option('deprecation.showPyplotGlobalUse', False)
-# import plotly.graph_objs as go
 
 st.set_page_config(layout='wide')
 
