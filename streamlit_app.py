@@ -20,6 +20,16 @@ st.set_page_config(layout='wide')
 df = pd.read_csv('df.csv', sep=',', index_col=0)
 df_search = pd.read_csv('df_search.csv', sep=',', index_col=0)
 
+def baseboard():
+    st.markdown('''
+
+    **Dashboard - Anbima (CRA & CRI)** `version 1.1`
+                        
+    Created by [Carlos Corro](https://www.linkedin.com/in/carlos-corro-121096165/).
+                
+    Fonte dos Dados: [ANBIMA](https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/taxas-de-cri-e-cra/taxas-de-cri-e-cra.htm).
+    ''')
+
 def Home(ativo):
     
     if ativo == "CRA":
@@ -79,7 +89,6 @@ def Home(ativo):
                 fontSize=17,
                 anchor='middle'
                 )
-
 
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
@@ -238,12 +247,7 @@ def Home(ativo):
                 )
 
             st.altair_chart(chart, theme='streamlit', use_container_width=True)
-    st.markdown('''
-
-    **Dashboard - Anbima (CRA & CRI)** `version 1.1`
-                        
-    Created by [Carlos Corro](https://www.linkedin.com/in/carlos-corro-121096165/).
-    ''')
+    baseboard()
 
 def search():
     text_input = st.text_input(
@@ -303,19 +307,16 @@ def search():
                     
                     df_graph = df_graph.reset_index(drop=True)
                     df_graph
-                    st.markdown('''
-                    **Dashboard - Anbima (CRA & CRI)** `version 1.1`
-                                        
-                    Created by [Carlos Corro](https://www.linkedin.com/in/carlos-corro-121096165/).
-                    ''')
-                    
+
+                    baseboard()
+
                 else:
                     st.error('O Ativo não foi negociado nos últimos 5 dias!', icon="📝")
 
 #Menu Bar
 def sideBar():
     selected=option_menu(
-        menu_title= "Dashboard - Mercado Secundário",
+        menu_title= "Dashboard Anbima - Mercado Secundário",
         options=["CRA", "CRI","Pesquisar"],
         icons=['boxes', 'buildings','search'],
         menu_icon = 'cast',
