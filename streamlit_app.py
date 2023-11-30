@@ -156,23 +156,38 @@ def search():
 
     if st.button("Buscar", type="primary") == True:
         if text_input == "":
-            st.write('')
-        if text_input != "":
-            filtro_cra = text_input
+            st.write('O campo está vazio. Preencha por favor.')
+        else:
+            if text_input in df_search['Código'].values:
+                df_graph = df_search.loc[df_search['Código'] == text_input]
+                df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
+                # bid = df_bid_ask['Taxa Compra']
+                # ask = df_bid_ask['Taxa Venda']
+                # data = df_bid_ask['Data']
+                # pu = df_graph['PU']
+                # desvio = df_graph['Desvio Padrão']
+                
 
-            df_graph = df_search.loc[df_search['Código'] == filtro_cra]
-            df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
-            bid = df_bid_ask['Taxa Compra']
-            ask = df_bid_ask['Taxa Venda']
-            data = df_bid_ask['Data']
-            pu = df_graph['PU']
-            desvio = df_graph['Desvio Padrão']
+                chart = alt.Chart(df_graph).mark_line().encode(
+                    x=alt.X("Data"),
+                    y=alt.Y("Desvio Padrão")
+                )
 
-            df_graph
+                st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
-    # plt.plot(data, desvio, label = "Desvio Padrão") 
-    # plt.legend() 
-    # plt.show()
+                # xrule = (
+                #     alt.Chart()
+                #     .mark_rule(color="cyan", strokeWidth=2)
+                #     .encode(x=alt.datum(alt.DateTime(year=2006, month="November")))
+                # )
+
+                # yrule = (
+                #     alt.Chart().mark_rule(strokeDash=[12, 6], size=2).encode(y=alt.datum(350))
+                # )
+
+                df_graph
+            else:
+                st.write("Código do ativo não foi encontrato na base de dados!")
 
     # plt.plot(data, pu, label = "PU") 
     # plt.legend() 
