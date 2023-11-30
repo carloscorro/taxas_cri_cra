@@ -1,7 +1,5 @@
 # Dashboard ANBIMA - CRA & CRI
 
-## CRA
-
 ![ezgif com-video-to-gif (3)](https://github.com/carloscorro/taxas_cri_cra/assets/65100808/5af080d0-61bc-4f97-ae83-a2e905f2943d)
 
 The dashboard consolidates data from the last 5 trading days of the CRA and CRI secondary market. And extracts relevant information from assets for analysis. Like yields by duration and benchmark. 
