@@ -150,33 +150,14 @@ df_hoje = df[df['Data'].isin([data_hoje])]
 
 #Criando CSV do DataFrame tratado
 df_hoje.to_csv("df.csv")
+
+#Removendo colunas
+df = df.drop(['% Reune', 'Quantidade'], axis=1)
+df = df.rename(columns={'Duration':'Duration - Dias', 'duration_anos': 'Duration Anos', 'taxa': 'Taxa'})
+df = df[['Data', 'Risco de Crédito', 'Emissor', 'Série', 'Emissão', 'Código',
+       'Vencimento', 'Benchmark', 'Taxa', 'Taxa Compra', 'Taxa Venda',
+       'Taxa Indicativa', 'Duration - Dias', 'Duration Anos', 'PU', '% PU Par', 
+       'Referência NTNB', 'Desvio Padrão']]
+
 df.to_csv('df_search.csv')
-
-######################=================#####################
-
-# #Filtrando pelo Benchmark
-# filtro = df['Benchmark'] == "Pós - DI"
-# df_filtro = df[filtro]
-# df_filtro
-
-#Conferindo se há valores vazios nas colunas
-# df_hoje[(df_hoje['Duration']=='')].count()
-# df_hoje[(df_hoje['Desvio Padrão']=='')].count()
-# df_hoje[(df_hoje['Taxa Compra']=='')].count()
-
-# #Definindo as colunas para o gráfico
-# dados_x = 'duration_anos'
-# dados_y = df['duration_anos'].value_counts()
-
-# #Plotar gráfico de dispersão
-# plt.scatter(df_hoje[dados_x], df_hoje[dados_y], color='blue')
-# plt.xlabel(dados_x)
-# plt.ylabel(dados_y)
-# plt.show()
-
-# df_hoje.columns
-
-# FILTRANDO COLUNA POR CONDIÇÃO
-# busca = ['']
-# df = df[df['Desvio Padrão'].isin(busca)]
 

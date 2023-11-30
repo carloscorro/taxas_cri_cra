@@ -145,15 +145,30 @@ def Home(ativo):
 
 def search():
     # Filtrar dados a partir do código do ativo
-    filtro_cra = 'CRA021004NV'
+    if "visibility" not in st.session_state:
+        st.session_state.visibility = "visible"
+        st.session_state.disabled = False
 
-    df_graph = df_search.loc[df['Código'] == filtro_cra]
-    df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
-    bid = df_bid_ask['Taxa Compra']
-    ask = df_bid_ask['Taxa Venda']
-    data = df_bid_ask['Data']
-    pu = df_graph['PU']
-    desvio = df_graph['Desvio Padrão']
+    text_input = st.text_input(
+    "Digite o Código do Ativo: 👇",
+    placeholder="Exemplo: CRA021004NV",
+    )
+
+    if st.button("Buscar", type="primary") == True:
+        if text_input == "":
+            st.write('')
+        if text_input != "":
+            filtro_cra = text_input
+
+            df_graph = df_search.loc[df_search['Código'] == filtro_cra]
+            df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
+            bid = df_bid_ask['Taxa Compra']
+            ask = df_bid_ask['Taxa Venda']
+            data = df_bid_ask['Data']
+            pu = df_graph['PU']
+            desvio = df_graph['Desvio Padrão']
+
+            df_graph
 
     # plt.plot(data, desvio, label = "Desvio Padrão") 
     # plt.legend() 
