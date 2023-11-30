@@ -238,13 +238,14 @@ def Home(ativo):
                 )
 
             st.altair_chart(chart, theme='streamlit', use_container_width=True)
+    st.markdown('''
+
+    **Dashboard - Anbima (CRA & CRI)** `version 1.1`
+                        
+    Created by [Carlos Corro](https://www.linkedin.com/in/carlos-corro-121096165/).
+    ''')
 
 def search():
-    # Filtrar dados a partir do código do ativo
-    if "visibility" not in st.session_state:
-        st.session_state.visibility = "visible"
-        st.session_state.disabled = False
-
     text_input = st.text_input(
     "Digite o Código do Ativo: 👇",
     placeholder="Exemplo: CRA021004NV",
@@ -302,7 +303,12 @@ def search():
                     
                     df_graph = df_graph.reset_index(drop=True)
                     df_graph
-
+                    st.markdown('''
+                    **Dashboard - Anbima (CRA & CRI)** `version 1.1`
+                                        
+                    Created by [Carlos Corro](https://www.linkedin.com/in/carlos-corro-121096165/).
+                    ''')
+                    
                 else:
                     st.error('O Ativo não foi negociado nos últimos 5 dias!', icon="📝")
 
@@ -316,6 +322,7 @@ def sideBar():
         default_index = 0,
         orientation="horizontal"
     )
+
     if selected=="CRA":
         papel = "CRA"
         Home(papel)
@@ -326,5 +333,6 @@ def sideBar():
 
     if selected=="Pesquisar":
         search()
+
 
 sideBar()
