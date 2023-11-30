@@ -60,7 +60,12 @@ def Home(ativo):
             chart = alt.Chart(emissor_total).mark_bar().encode(
             x=alt.X('Risco de Crédito', sort=None),
             y="Quantidade",
-            )
+            ).properties(
+                title='Top 20 - Empresas'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
 
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
@@ -68,7 +73,13 @@ def Home(ativo):
             chart = alt.Chart(empresa_total).mark_bar().encode(
             x=alt.X('Emissor', sort=None),
             y="Quantidade",
-            )
+            ).properties(
+                title='Maiores Emissores'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
+
 
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
@@ -80,7 +91,13 @@ def Home(ativo):
                 x='duration_anos',
                 y='Quantidade',
                 color='Benchmark'
-            )
+            ).properties(
+                title='Quantidade de Emissão por Benchmark'
+            ).configure_title(
+                fontSize=17,
+                anchor='middle'
+                )
+            
             st.altair_chart(benchmark, theme='streamlit', use_container_width=True)
 
         with tab2:
@@ -216,7 +233,7 @@ def search():
                             fontSize=17,
                             anchor='middle'
                             )
-
+                        
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
                     
                     with col3:
@@ -232,9 +249,12 @@ def search():
 
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
-                    st.markdown("<h1 style='text-align: center; color: black;'>Tabela de Dados</h1>", unsafe_allow_html=True)
-
+                    st.markdown("<h1 style='text-align: center; color: black; font-size:28px'>Tabela de Dados</h1>", unsafe_allow_html=True)
+                    
+                    df_graph = df_graph.reset_index(drop=True)
                     df_graph
+
+
                 else:
                     st.error('O Ativo não foi negociado nos últimos 5 dias!', icon="📝")
 
