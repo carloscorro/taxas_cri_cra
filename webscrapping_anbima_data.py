@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 import pylab as pl
 from datetime import datetime
+import numpy as np
 
 #Aqui fazemos o request do link
 url = "https://www.anbima.com.br/pt_br/informar/precos-e-indices/precos/taxas-de-cri-e-cra/taxas-de-cri-e-cra.htm"
@@ -137,6 +138,9 @@ df[coluna] = df[coluna].apply(converter_float)
 filtro = df[coluna] != ''
 df = df[filtro]
 
+#Criando uma coluna Quantidade que irá ter o valor 1
+df['Quantidade'] = np.where(df['Benchmark'] == 'IPCA +', 1, 1)
+
 #Pegando a data atual dos dados 
 datas = df.Data.unique()
 data_hoje = datas[-1]
@@ -159,15 +163,15 @@ df_hoje.to_csv("df.csv")
 # df_hoje[(df_hoje['Desvio Padrão']=='')].count()
 # df_hoje[(df_hoje['Taxa Compra']=='')].count()
 
-#Definindo as colunas para o gráfico
-dados_x = 'duration_anos'
-dados_y = df['duration_anos'].value_counts()
+# #Definindo as colunas para o gráfico
+# dados_x = 'duration_anos'
+# dados_y = df['duration_anos'].value_counts()
 
-#Plotar gráfico de dispersão
-plt.scatter(df_hoje[dados_x], df_hoje[dados_y], color='blue')
-plt.xlabel(dados_x)
-plt.ylabel(dados_y)
-plt.show()
+# #Plotar gráfico de dispersão
+# plt.scatter(df_hoje[dados_x], df_hoje[dados_y], color='blue')
+# plt.xlabel(dados_x)
+# plt.ylabel(dados_y)
+# plt.show()
 
 # df_hoje.columns
 
