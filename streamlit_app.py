@@ -93,6 +93,8 @@ def Home(ativo):
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
     with col2:
+        color_graphs_2_3 = "#244fff"
+
         tab1, tab2, tab3, tab4 = st.tabs(['Benchmarks', 'CDI +', 'IPCA +', 'Pós CDI'])
 
         with tab1:
@@ -173,8 +175,9 @@ def Home(ativo):
 
     with col3:
         chart_ipca = alt.Chart(df_cra_ipca).mark_boxplot(size=40).encode(
-        x='duration_anos',
-        y='taxa').properties(
+        x=alt.Y("duration_anos"),
+        y=alt.Y("taxa"),
+        color=alt.value(color_graphs_2_3)).properties(
                 title='Taxa por Duration em anos'
             ).configure_title(
                 fontSize=17,
@@ -183,7 +186,8 @@ def Home(ativo):
         
         chart_cdi = alt.Chart(df_cra_cdi).mark_boxplot(extent='min-max').encode(
         x='duration_anos',
-        y='taxa').properties(
+        y='taxa',
+        color=alt.value(color_graphs_2_3)).properties(
                 title='Taxa por Duration em anos'
             ).configure_title(
                 fontSize=17,
@@ -192,7 +196,8 @@ def Home(ativo):
         
         chart_pos_di = alt.Chart(df_cra_pos_di).mark_boxplot(extent='min-max').encode(
         x='duration_anos',
-        y='taxa').properties(
+        y='taxa',
+        color=alt.value(color_graphs_2_3)).properties(
                 title='Taxa por Duration em anos'
             ).configure_title(
                 fontSize=17,
@@ -215,6 +220,7 @@ def Home(ativo):
             chart = alt.Chart(df_cra_ipca).mark_circle(size=60).encode(
             x='Duration',
             y='taxa',
+            color=alt.value(color_graphs_2_3)
             ).interactive().properties(
                 title='Taxa por Duration em dias'
             ).configure_title(
@@ -227,6 +233,7 @@ def Home(ativo):
             chart = alt.Chart(df_cra_cdi).mark_circle(size=60).encode(
             x='Duration',
             y='taxa',
+            color=alt.value(color_graphs_2_3)
             ).interactive().properties(
                 title='Taxa por Duration em dias'
             ).configure_title(
@@ -239,6 +246,7 @@ def Home(ativo):
             chart = alt.Chart(df_cra_pos_di).mark_circle(size=60).encode(
             x='Duration',
             y='taxa',
+            color=alt.value(color_graphs_2_3)
             ).interactive().properties(
                 title='Taxa por Duration em dias'
             ).configure_title(
@@ -303,7 +311,7 @@ def search():
 
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
-                    st.markdown("<h1 style='text-align: center; color: black; font-size:28px'>Tabela de Dados</h1>", unsafe_allow_html=True)
+                    st.markdown("<h1 style='text-align: center; color: white; font-size:28px'>Tabela de Dados</h1>", unsafe_allow_html=True)
                     
                     df_graph = df_graph.reset_index(drop=True)
                     df_graph
@@ -335,5 +343,17 @@ def sideBar():
     if selected=="Pesquisar":
         search()
 
-
 sideBar()
+
+#theme
+hide_st_style="""
+
+<style>
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
+
+</style>
+
+
+"""
