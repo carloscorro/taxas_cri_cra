@@ -197,16 +197,25 @@ def search():
                     with col1:
                         chart = alt.Chart(df_graph).mark_line(point=True).encode(
                             x=alt.X("Data"),
-                            y=alt.Y("PU", scale=alt.Scale(zero=False))
-                        )
-
+                            y=alt.Y("PU", scale=alt.Scale(zero=False))).properties(
+                            title='PU ao longo dos dias'
+                        ).configure_title(
+                            fontSize=17,
+                            anchor='middle'
+                            )
+                        
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
                     
                     with col2:
                         chart = alt.Chart(df_graph).mark_line(point=True).encode(
                             x=alt.X("Data"),
                             y=alt.Y("Desvio Padrão", scale=alt.Scale(zero=False))
-                        )
+                        ).properties(
+                            title='Desvio Padrão ao longo dos dias'
+                        ).configure_title(
+                            fontSize=17,
+                            anchor='middle'
+                            )
 
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
                     
@@ -214,9 +223,16 @@ def search():
                         chart = alt.Chart(df_graph).mark_line(point=True).encode(
                             x=alt.X("Data"),
                             y=alt.Y("Taxa Indicativa", scale=alt.Scale(zero=False))
-                        )
+                        ).properties(
+                            title='Taxa Indicativa ao longo dos dias'
+                        ).configure_title(
+                            fontSize=17,
+                            anchor='middle'
+                            )
 
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
+                    st.markdown("<h1 style='text-align: center; color: black;'>Tabela de Dados</h1>", unsafe_allow_html=True)
 
                     df_graph
                 else:
