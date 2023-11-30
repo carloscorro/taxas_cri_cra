@@ -150,6 +150,7 @@ df_hoje = df[df['Data'].isin([data_hoje])]
 
 #Criando CSV do DataFrame tratado
 df_hoje.to_csv("df.csv")
+df.to_csv('df_search.csv')
 
 ######################=================#####################
 
@@ -179,29 +180,3 @@ df_hoje.to_csv("df.csv")
 # busca = ['']
 # df = df[df['Desvio Padrão'].isin(busca)]
 
-#Filtrar dados a partir do código do ativo
-# filtro_cra = 'CRA021004NV'
-
-# df_graph = df.loc[df['Código'] == filtro_cra]
-# df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
-# bid = df_bid_ask['Taxa Compra']
-# ask = df_bid_ask['Taxa Venda']
-# data = df_bid_ask['Data']
-# pu = df_graph['PU']
-# desvio = df_graph['DP']
-
-# plt.plot(data, desvio, label = "Desvio Padrão") 
-# plt.legend() 
-# plt.show()
-
-# plt.plot(data, pu, label = "PU") 
-# plt.legend() 
-# plt.show()
-
-# plt.plot(data, bid, label = "bid") 
-# plt.plot(data, ask, label = "ask") 
-# plt.legend() 
-# plt.show()
-
-# print(df_graph.columns)
-# print(df_graph[['Data', 'PU']])

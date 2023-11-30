@@ -17,6 +17,7 @@ from streamlit_option_menu import option_menu
 st.set_page_config(layout='wide')
 
 df = pd.read_csv('df.csv', sep=',', index_col=0)
+df_search = pd.read_csv('df_search.csv', sep=',', index_col=0)
 
 def Home(ativo):
     
@@ -81,6 +82,20 @@ def Home(ativo):
             )
             st.altair_chart(benchmark, theme='streamlit', use_container_width=True)
 
+        with tab2:
+            chart = alt.Chart(df_cra_ipca).transform_fold(
+            ['Taxa Compra', 'Taxa Venda', 'Taxa Indicativa'],
+            as_=['Experiment', 'Measurement']
+                ).mark_bar(
+            opacity=0.3,
+            binSpacing=0
+                ).encode(
+            alt.X('Measurement:Q', bin=alt.Bin(maxbins=100)),
+            alt.Y('count()', stack=None),
+            alt.Color('Experiment:N')
+                )
+            st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
     col3, col4 = st.columns(2)
 
     with col3:
@@ -128,12 +143,37 @@ def Home(ativo):
 
             st.altair_chart(chart, theme='streamlit', use_container_width=True)
 
+def search():
+    # Filtrar dados a partir do código do ativo
+    filtro_cra = 'CRA021004NV'
+
+    df_graph = df_search.loc[df['Código'] == filtro_cra]
+    df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
+    bid = df_bid_ask['Taxa Compra']
+    ask = df_bid_ask['Taxa Venda']
+    data = df_bid_ask['Data']
+    pu = df_graph['PU']
+    desvio = df_graph['Desvio Padrão']
+
+    # plt.plot(data, desvio, label = "Desvio Padrão") 
+    # plt.legend() 
+    # plt.show()
+
+    # plt.plot(data, pu, label = "PU") 
+    # plt.legend() 
+    # plt.show()
+
+    # plt.plot(data, bid, label = "bid") 
+    # plt.plot(data, ask, label = "ask") 
+    # plt.legend() 
+    # plt.show()
+
 #Menu Bar
 def sideBar():
     selected=option_menu(
         menu_title= "Dashboard - Mercado Secundário",
-        options=["CRA", "CRI"],
-        icons=['boxes', 'buildings'],
+        options=["CRA", "CRI","Pesquisar"],
+        icons=['boxes', 'buildings','search'],
         menu_icon = 'cast',
         default_index = 0,
         orientation="horizontal"
@@ -145,5 +185,8 @@ def sideBar():
     if selected=="CRI":
         papel = "CRI"
         Home(papel)
+
+    if selected=="Pesquisar":
+        search()
 
 sideBar()
