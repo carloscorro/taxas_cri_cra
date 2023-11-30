@@ -37,9 +37,14 @@ def Home(ativo):
     df_cra_pos_di = df_cra[filtro]
 
     #Criando um DataFrame agrupando pela quantidade a coluna Risco de Crédito
+    empresa_total = df_cra.groupby('Emissor')[['Quantidade']].sum().reset_index()
+    empresa_total = empresa_total.sort_values(by='Quantidade', ascending=False).reset_index()
+    empresa_total = empresa_total.head(20)
+    empresa_total = empresa_total.drop(columns='index')
+
     emissor_total = df_cra.groupby('Risco de Crédito')[['Quantidade']].sum().reset_index()
     emissor_total = emissor_total.sort_values(by='Quantidade', ascending=False).reset_index()
-    emissor_total = emissor_total.head(10)
+    emissor_total = emissor_total.head(20)
     emissor_total = emissor_total.drop(columns='index')
 
     #Criando um DataFrame agrupando pela quantidade as colunas Benchmark e Duration
@@ -48,17 +53,25 @@ def Home(ativo):
     col1, col2 = st.columns(2)
 
     with col1:
-        tab1, tab2 = st.tabs(['Top 10 - Emissores', 'CRA'])
+        tab1, tab2 = st.tabs(['Empresas', 'Emissores'])
         with tab1:
             chart = alt.Chart(emissor_total).mark_bar().encode(
-            x='Risco de Crédito',
+            x=alt.X('Risco de Crédito', sort=None),
+            y="Quantidade",
+            )
+
+            st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
+        with tab2:
+            chart = alt.Chart(empresa_total).mark_bar().encode(
+            x=alt.X('Emissor', sort=None),
             y="Quantidade",
             )
 
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
     with col2:
-        tab1, tab2 = st.tabs(['Benchmark', 'Taxa - CDI +'])
+        tab1, tab2 = st.tabs(['Benchmarks', 'Taxa - CDI +'])
 
         with tab1:
             benchmark = alt.Chart(benchmark_total).mark_bar(size=30).encode(
@@ -68,20 +81,18 @@ def Home(ativo):
             )
             st.altair_chart(benchmark, theme='streamlit', use_container_width=True)
 
-
-
     col3, col4 = st.columns(2)
 
     with col3:
         chart_ipca = alt.Chart(df_cra_ipca).mark_boxplot(size=40).encode(
-        x='taxa',
-        y='duration_anos')
+        x='duration_anos',
+        y='taxa')
         chart_cdi = alt.Chart(df_cra_cdi).mark_boxplot(extent='min-max').encode(
-        x='taxa',
-        y='duration_anos')
+        x='duration_anos',
+        y='taxa')
         chart_pos_di = alt.Chart(df_cra_pos_di).mark_boxplot(extent='min-max').encode(
-        x='taxa',
-        y='duration_anos')
+        x='duration_anos',
+        y='taxa')
 
         tab3, tab4, tab5 = st.tabs(['Taxa - IPCA +', 'Taxa - CDI +', 'Taxa - Pós DI'])
 
