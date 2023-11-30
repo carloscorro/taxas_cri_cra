@@ -5,12 +5,6 @@
 The dashboard consolidates data from the last 5 trading days of the CRA and CRI secondary market. And extracts relevant information from assets for analysis. Like yields by duration and benchmark. 
 Companies that issued the most assets. And the securitization companies that carried out the most asset securitization.
 
-## Some features in the menu are:
-
-+ CRA
-+ CRI 
-+ Pesquisar
-
 ## CRI
 
 ![ezgif com-video-to-gif (4)](https://github.com/carloscorro/taxas_cri_cra/assets/65100808/3c1a2e8a-3500-47dc-bb81-73471b1c7e36)
