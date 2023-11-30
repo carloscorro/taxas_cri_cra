@@ -276,22 +276,21 @@ def search():
                     with col2:
                         chart = alt.Chart(df_graph).mark_line(point=True).encode(
                             x=alt.X("Data"),
-                            y=alt.Y("Desvio Padrão", scale=alt.Scale(zero=False))
+                            y=alt.Y("Taxa Indicativa", scale=alt.Scale(zero=False))
                         ).properties(
-                            title='Desvio Padrão ao longo dos dias'
+                            title='Taxa Indicativa ao longo dos dias'
                         ).configure_title(
                             fontSize=17,
                             anchor='middle'
                             )
-                        
                         st.altair_chart(chart, theme="streamlit", use_container_width=True)
-                    
+
                     with col3:
                         chart = alt.Chart(df_graph).mark_line(point=True).encode(
                             x=alt.X("Data"),
-                            y=alt.Y("Taxa Indicativa", scale=alt.Scale(zero=False))
+                            y=alt.Y("Desvio Padrão", scale=alt.Scale(zero=False))
                         ).properties(
-                            title='Taxa Indicativa ao longo dos dias'
+                            title='Desvio Padrão ao longo dos dias'
                         ).configure_title(
                             fontSize=17,
                             anchor='middle'
@@ -303,7 +302,6 @@ def search():
                     
                     df_graph = df_graph.reset_index(drop=True)
                     df_graph
-
 
                 else:
                     st.error('O Ativo não foi negociado nos últimos 5 dias!', icon="📝")
