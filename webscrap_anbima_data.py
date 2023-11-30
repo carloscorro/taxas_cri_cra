@@ -161,3 +161,4 @@ df = df[['Data', 'Risco de Crédito', 'Emissor', 'Série', 'Emissão', 'Código'
 
 df.to_csv('df_search.csv')
 
+df

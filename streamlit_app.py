@@ -1,13 +1,14 @@
+import streamlit as st
+from streamlit_option_menu import option_menu
 import pandas as pd
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 import pylab as pl
 from datetime import datetime
-import streamlit as st
 import plotly.express as px
 import altair as alt
 import numpy as np
-from streamlit_option_menu import option_menu
+import time
 # from numerize.numerize import numerize
 # import time
 # from streamlit_extras.metric_cards import style_metric_cards
@@ -72,7 +73,7 @@ def Home(ativo):
             st.altair_chart(chart, theme="streamlit", use_container_width=True)
 
     with col2:
-        tab1, tab2 = st.tabs(['Benchmarks', 'Taxa - CDI +'])
+        tab1, tab2, tab3, tab4 = st.tabs(['Benchmarks', 'CDI +', 'IPCA +', 'Pós CDI'])
 
         with tab1:
             benchmark = alt.Chart(benchmark_total).mark_bar(size=30).encode(
@@ -83,14 +84,42 @@ def Home(ativo):
             st.altair_chart(benchmark, theme='streamlit', use_container_width=True)
 
         with tab2:
-            chart = alt.Chart(df_cra_ipca).transform_fold(
-            ['Taxa Compra', 'Taxa Venda', 'Taxa Indicativa'],
-            as_=['Experiment', 'Measurement']
+            chart = alt.Chart(df_cra_cdi).transform_fold(
+            ['Taxa Compra'],
+            as_=['Experiment', 'Taxa Compra']
                 ).mark_bar(
             opacity=0.3,
             binSpacing=0
                 ).encode(
-            alt.X('Measurement:Q', bin=alt.Bin(maxbins=100)),
+            alt.X('Taxa Compra:Q', bin=alt.Bin(maxbins=100)),
+            alt.Y('count()', stack=None),
+            alt.Color('Experiment:N')
+                )
+            st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
+        with tab3:
+            chart = alt.Chart(df_cra_ipca).transform_fold(
+            ['Taxa Compra'],
+            as_=['Experiment', 'Taxa Compra']
+                ).mark_bar(
+            opacity=0.3,
+            binSpacing=0
+                ).encode(
+            alt.X('Taxa Compra:Q', bin=alt.Bin(maxbins=100)),
+            alt.Y('count()', stack=None),
+            alt.Color('Experiment:N')
+                )
+            st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
+        with tab4:
+            chart = alt.Chart(df_cra_pos_di).transform_fold(
+            ['Taxa Compra'],
+            as_=['Experiment', 'Taxa Compra']
+                ).mark_bar(
+            opacity=0.3,
+            binSpacing=0
+                ).encode(
+            alt.X('Taxa Compra:Q', bin=alt.Bin(maxbins=100)),
             alt.Y('count()', stack=None),
             alt.Color('Experiment:N')
                 )
@@ -155,48 +184,43 @@ def search():
     )
 
     if st.button("Buscar", type="primary") == True:
-        if text_input == "":
-            st.write('O campo está vazio. Preencha por favor.')
-        else:
-            if text_input in df_search['Código'].values:
-                df_graph = df_search.loc[df_search['Código'] == text_input]
-                df_bid_ask = df_graph[['Data', 'Taxa Compra', 'Taxa Venda']]
-                # bid = df_bid_ask['Taxa Compra']
-                # ask = df_bid_ask['Taxa Venda']
-                # data = df_bid_ask['Data']
-                # pu = df_graph['PU']
-                # desvio = df_graph['Desvio Padrão']
-                
-
-                chart = alt.Chart(df_graph).mark_line().encode(
-                    x=alt.X("Data"),
-                    y=alt.Y("Desvio Padrão")
-                )
-
-                st.altair_chart(chart, theme="streamlit", use_container_width=True)
-
-                # xrule = (
-                #     alt.Chart()
-                #     .mark_rule(color="cyan", strokeWidth=2)
-                #     .encode(x=alt.datum(alt.DateTime(year=2006, month="November")))
-                # )
-
-                # yrule = (
-                #     alt.Chart().mark_rule(strokeDash=[12, 6], size=2).encode(y=alt.datum(350))
-                # )
-
-                df_graph
+        with st.spinner('Procurando...'):
+            time.sleep(1)
+            if text_input == "":
+                st.error('O campo está vazio! Digite um código para pesquisar!', icon="🕵️‍♂️")
             else:
-                st.write("Código do ativo não foi encontrato na base de dados!")
+                if text_input in df_search['Código'].values:
+                    df_graph = df_search.loc[df_search['Código'] == text_input]
 
-    # plt.plot(data, pu, label = "PU") 
-    # plt.legend() 
-    # plt.show()
+                    col1, col2, col3 = st.columns(3)
+                    
+                    with col1:
+                        chart = alt.Chart(df_graph).mark_line(point=True).encode(
+                            x=alt.X("Data"),
+                            y=alt.Y("PU", scale=alt.Scale(zero=False))
+                        )
 
-    # plt.plot(data, bid, label = "bid") 
-    # plt.plot(data, ask, label = "ask") 
-    # plt.legend() 
-    # plt.show()
+                        st.altair_chart(chart, theme="streamlit", use_container_width=True)
+                    
+                    with col2:
+                        chart = alt.Chart(df_graph).mark_line(point=True).encode(
+                            x=alt.X("Data"),
+                            y=alt.Y("Desvio Padrão", scale=alt.Scale(zero=False))
+                        )
+
+                        st.altair_chart(chart, theme="streamlit", use_container_width=True)
+                    
+                    with col3:
+                        chart = alt.Chart(df_graph).mark_line(point=True).encode(
+                            x=alt.X("Data"),
+                            y=alt.Y("Taxa Indicativa", scale=alt.Scale(zero=False))
+                        )
+
+                        st.altair_chart(chart, theme="streamlit", use_container_width=True)
+
+                    df_graph
+                else:
+                    st.error('O Ativo não foi negociado nos últimos 5 dias!', icon="📝")
 
 #Menu Bar
 def sideBar():
