@@ -18,5 +18,5 @@ In the search tab, you can enter the asset code and extract data from the last 5
 
 ## Link
 
-<a href="https://mcalc-beta.streamlit.app/">Click Here to use the Dashboard!</a>
+<a href="https://dashboard-anbima-cra-cri.streamlit.app/">Click Here to use the Dashboard!</a>
 
